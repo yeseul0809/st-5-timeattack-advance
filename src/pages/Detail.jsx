@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchData, todoApi } from "../api/todos";
+import { todoApi } from "../api/todos";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // TODO: useQuery 로 리팩터링 하세요.
-
-  const { isLoading, error, data } = useQuery({
+  const fetchDetail = async () => {
+    const response = await todoApi.get(`/todos/${id}`);
+    return response.data;
+  };
+  const { data, isLoading, error } = useQuery({
     queryKey: ["todos", id],
-    queryFn: fetchData,
+    queryFn: fetchDetail,
   });
 
   if (isLoading) return <div style={{ fontSize: 36 }}>로딩중...</div>;

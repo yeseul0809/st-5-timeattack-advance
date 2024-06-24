@@ -1,36 +1,32 @@
 import { useState } from "react";
-import { todoApi } from "../api/todos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchData } from "../api/todos";
+import { todoApi } from "../api/todos";
 
-export default function TodoForm({ fetchData }) {
+export default function TodoForm() {
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
   const queryClient = useQueryClient();
 
-  // TODO: useMutation 으로 리팩터링 하세요.
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return await todoApi.post("/todos", {
+        id: Date.now().toString(),
+        title,
+        contents,
+        isCompleted: false,
+        createdAt: Date.now(),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+      setTitle("");
+      setContents("");
+    },
+  });
 
-  const mutation = useMutation(
-    async (newTodo) => todoApi.post("/todos", newTodo),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["todos"]);
-        fetchData();
-      },
-    }
-  );
-
-  const handleAddTodo = async (e) => {
+  const handleAddTodo = (e) => {
     e.preventDefault();
-    setTitle("");
-    setContents("");
-    mutation.mutate({
-      id: Date.now().toString(),
-      title,
-      contents,
-      isCompleted: false,
-      createdAt: Date.now(),
-    });
+    mutation.mutate();
   };
 
   return (

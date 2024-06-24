@@ -7,6 +7,6 @@ export const todoApi = axios.create({
 export const fetchData = async ({ queryKey }) => {
   const [_, id] = queryKey;
 
-  const response = await todoApi(`/todos/${id}`);
+  const response = await todoApi(`/todos`);
   return response.data;
 };
