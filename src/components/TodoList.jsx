@@ -18,7 +18,6 @@ export default function TodoList() {
     },
   });
 
-  // TODO: 아래 handleLike 로 구현되어 있는 부분을 useMutation 으로 리팩터링 해보세요. 모든 기능은 동일하게 동작해야 합니다.
   const queryClient = useQueryClient();
   const handleLike = async (id, currentLiked) => {
     const previousTodos = [...todos];
