@@ -1,7 +1,21 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { todoApi } from "../api/todos";
 
 export default function TodoList({ todos }) {
   const navigate = useNavigate();
+
+  const {
+    isLoading,
+    error,
+    data: todos,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: async () => {
+      const response = await todoApi.get("/todos?_sort=-createdAt");
+      return response.data;
+    },
+  });
   return (
     <ul style={{ listStyle: "none", width: 250 }}>
       {todos.map((todo) => (
